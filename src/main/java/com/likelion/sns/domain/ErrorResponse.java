@@ -1,11 +1,12 @@
-package com.likelion.sns.exception;
+package com.likelion.sns.domain;
 
+import com.likelion.sns.exception.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AppException extends RuntimeException {
+public class ErrorResponse {
 
     private ErrorCode errorCode;
     private String message;
