@@ -17,5 +17,10 @@ public class UserService {
 
     public UserJoinResponse join(UserJoinRequest userJoinRequest) {
 
+        // username 중복 쳌
+        userRepository.findByUserName(userJoinRequest.getUserName())
+                .ifPresent(user -> {throw new AppException(ErrorCode.DUPLICATED_USER_NAME, ErrorCode.DUPLICATED_USER_NAME.getMessage());
+                });
+
     }
 }
