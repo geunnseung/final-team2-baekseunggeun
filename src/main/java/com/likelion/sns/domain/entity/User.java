@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,4 +21,7 @@ public class User {
     @Column(unique = true)
     private String userName;
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> postList;
 }
