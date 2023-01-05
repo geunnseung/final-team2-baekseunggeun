@@ -3,10 +3,15 @@ package com.likelion.sns.Controller;
 import com.likelion.sns.domain.Response;
 import com.likelion.sns.domain.dto.post.PostCreateRequest;
 import com.likelion.sns.domain.dto.post.PostCreateResponse;
+import com.likelion.sns.domain.dto.post.PostListResponse;
 import com.likelion.sns.domain.dto.post.PostOneResponse;
 import com.likelion.sns.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +32,12 @@ public class PostController {
     @GetMapping("/{id}")
     public Response<PostOneResponse> getOnePost(@PathVariable Long id) {
         return Response.success(postService.getOnePost(id));
+    }
+
+    // post 전체 조회
+    @GetMapping
+    public Response<Page<PostListResponse>> getList(@PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return Response.success(postService.getAllPosts(pageable));
     }
 
 
