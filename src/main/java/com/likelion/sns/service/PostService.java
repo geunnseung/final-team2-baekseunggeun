@@ -63,6 +63,7 @@ public class PostService {
 
         post.setTitle(postModifyRequest.getTitle());
         post.setBody(postModifyRequest.getBody());
+        // setter 쓰지않고는?
         Post savedPost = postRepository.saveAndFlush(post);
 
         return PostModifyResponse.toResponse(savedPost);
