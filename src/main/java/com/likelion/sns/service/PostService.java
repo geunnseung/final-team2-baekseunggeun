@@ -69,4 +69,19 @@ public class PostService {
         return PostModifyResponse.toResponse(savedPost);
     }
 
+    // post 삭제
+    public PostDeleteResponse deletePost(Long postId, Authentication authentication) {
+
+        User user = userRepository.findByUserName(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, ErrorCode.POST_NOT_FOUND.getMessage()));
+        if (!Objects.equals(post.getUser().getUserId(), user.getUserId())) {
+            throw new AppException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage());
+        }
+
+        postRepository.delete(post);
+        return PostDeleteResponse.toResponse(postId);
+    }
+
 }

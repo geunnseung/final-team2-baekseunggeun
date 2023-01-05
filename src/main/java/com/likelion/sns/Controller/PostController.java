@@ -47,4 +47,11 @@ public class PostController {
         return Response.success(postService.modifyPost(id, postModifyRequest, authentication));
     }
 
+    // post 삭제
+    @DeleteMapping("/{id}")
+    public Response<PostDeleteResponse> deletePost(@PathVariable Long id, Authentication authentication) {
+
+        return Response.success(postService.deletePost(id, authentication));
+    }
+
 }
