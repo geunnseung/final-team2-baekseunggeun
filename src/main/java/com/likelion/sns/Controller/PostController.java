@@ -1,10 +1,7 @@
 package com.likelion.sns.Controller;
 
 import com.likelion.sns.domain.Response;
-import com.likelion.sns.domain.dto.post.PostCreateRequest;
-import com.likelion.sns.domain.dto.post.PostCreateResponse;
-import com.likelion.sns.domain.dto.post.PostListResponse;
-import com.likelion.sns.domain.dto.post.PostOneResponse;
+import com.likelion.sns.domain.dto.post.*;
 import com.likelion.sns.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -25,20 +22,29 @@ public class PostController {
     // post 등록
     @PostMapping
     public Response<PostCreateResponse> createPost(@RequestBody PostCreateRequest postCreateRequest, Authentication authentication) {
+
         return Response.success(postService.create(postCreateRequest, authentication));
     }
 
     // post 단건 조회
     @GetMapping("/{id}")
     public Response<PostOneResponse> getOnePost(@PathVariable Long id) {
+
         return Response.success(postService.getOnePost(id));
     }
 
     // post 전체 조회
     @GetMapping
     public Response<Page<PostListResponse>> getList(@PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
         return Response.success(postService.getAllPosts(pageable));
     }
 
+    // post 수정
+    @PutMapping("/{id}")
+    public Response<PostModifyResponse> modifyPost(@PathVariable Long id, @RequestBody PostModifyRequest postModifyRequest, Authentication authentication) {
+
+        return Response.success(postService.modifyPost(id, postModifyRequest, authentication));
+    }
 
 }

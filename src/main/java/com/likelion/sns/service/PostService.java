@@ -1,9 +1,6 @@
 package com.likelion.sns.service;
 
-import com.likelion.sns.domain.dto.post.PostCreateRequest;
-import com.likelion.sns.domain.dto.post.PostCreateResponse;
-import com.likelion.sns.domain.dto.post.PostListResponse;
-import com.likelion.sns.domain.dto.post.PostOneResponse;
+import com.likelion.sns.domain.dto.post.*;
 import com.likelion.sns.domain.entity.Post;
 import com.likelion.sns.domain.entity.User;
 import com.likelion.sns.exception.AppException;
@@ -15,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +48,24 @@ public class PostService {
 
         Page<Post> posts = postRepository.findAll(pageable);
         return posts.map(PostListResponse::toResponse);
+    }
+
+    // post 수정
+    public PostModifyResponse modifyPost(Long postId, PostModifyRequest postModifyRequest, Authentication authentication) {
+
+        User user = userRepository.findByUserName(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, ErrorCode.POST_NOT_FOUND.getMessage()));
+        if (!Objects.equals(post.getUser().getUserId(), user.getUserId())) {
+            throw new AppException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage());
+        }
+
+        post.setTitle(postModifyRequest.getTitle());
+        post.setBody(postModifyRequest.getBody());
+        Post savedPost = postRepository.saveAndFlush(post);
+
+        return PostModifyResponse.toResponse(savedPost);
     }
 
 }
