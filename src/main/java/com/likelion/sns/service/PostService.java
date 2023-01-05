@@ -79,6 +79,7 @@ public class PostService {
         if (!Objects.equals(post.getUser().getUserId(), user.getUserId())) {
             throw new AppException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage());
         }
+        // 로직이 계속 중복..
 
         postRepository.delete(post);
         return PostDeleteResponse.toResponse(postId);
