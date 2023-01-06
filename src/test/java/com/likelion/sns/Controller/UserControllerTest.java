@@ -73,6 +73,53 @@ class UserControllerTest {
 
     }
 
+    @Test
+    @DisplayName("로그인 성공")
+    void login_success() throws Exception {
+
+        when(userService.login(any(), any()))
+                .thenReturn("token");
+
+        mockMvc.perform(post("/api/v1/users/login")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(userJoinRequest)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 없는 id")
+    void login_fail_noid() throws Exception {
+
+        when(userService.login(any(), any()))
+                .thenThrow(new AppException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+
+        mockMvc.perform(post("/api/v1/users/login")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(userJoinRequest)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 패스워드 오류")
+    void login_fail_wrongpwd() throws Exception {
+
+        when(userService.login(any(), any()))
+                .thenThrow(new AppException(ErrorCode.INVALID_PASSWORD, ErrorCode.INVALID_PASSWORD.getMessage()));
+
+        mockMvc.perform(post("/api/v1/users/login")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(userJoinRequest)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+
+    }
 
 
 
