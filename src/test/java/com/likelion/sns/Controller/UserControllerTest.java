@@ -42,6 +42,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("회원가입 성공")
+    @WithMockUser
     void join_success() throws Exception {
 
         when(userService.join(any())).thenReturn(userJoinResponse);
@@ -59,6 +60,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("회원가입 실패 - username 중복")
+    @WithMockUser
     void join_fail() throws Exception {
 
         when(userService.join(any()))
@@ -75,6 +77,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그인 성공")
+    @WithMockUser
     void login_success() throws Exception {
 
         when(userService.login(any(), any()))
@@ -91,6 +94,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그인 실패 - 없는 id")
+    @WithMockUser
     void login_fail_noid() throws Exception {
 
         when(userService.login(any(), any()))
@@ -107,6 +111,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그인 실패 - 패스워드 오류")
+    @WithMockUser
     void login_fail_wrongpwd() throws Exception {
 
         when(userService.login(any(), any()))
