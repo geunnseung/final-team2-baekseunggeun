@@ -1,9 +1,6 @@
 package com.likelion.sns.service;
 
-import com.likelion.sns.domain.dto.comment.CommentCreateRequest;
-import com.likelion.sns.domain.dto.comment.CommentCreateResponse;
-import com.likelion.sns.domain.dto.comment.CommentModifyRequest;
-import com.likelion.sns.domain.dto.comment.CommentModifyResponse;
+import com.likelion.sns.domain.dto.comment.*;
 import com.likelion.sns.domain.entity.Comment;
 import com.likelion.sns.domain.entity.Post;
 import com.likelion.sns.domain.entity.User;
@@ -60,4 +57,25 @@ public class CommentService {
         return CommentModifyResponse.toResponse(savedComment);
 
     }
+
+    // comment 삭제
+    public CommentDeleteResponse deleteComment(Long postId, Long id, Authentication authentication) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, ErrorCode.POST_NOT_FOUND.getMessage()));
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND, ErrorCode.COMMENT_NOT_FOUND.getMessage()));
+        User user = userRepository.findByUserName(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+
+        if (!Objects.equals(comment.getUser().getUserId(),user.getUserId())){
+            throw new AppException(ErrorCode.INVALID_PERMISSION, ErrorCode.INVALID_PERMISSION.getMessage());
+        }
+
+        commentRepository.delete(comment);
+
+        return CommentDeleteResponse.toResponse(id);
+
+    }
+
 }
