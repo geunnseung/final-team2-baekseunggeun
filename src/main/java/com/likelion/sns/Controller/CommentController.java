@@ -3,6 +3,8 @@ package com.likelion.sns.Controller;
 import com.likelion.sns.domain.Response;
 import com.likelion.sns.domain.dto.comment.CommentCreateRequest;
 import com.likelion.sns.domain.dto.comment.CommentCreateResponse;
+import com.likelion.sns.domain.dto.comment.CommentModifyRequest;
+import com.likelion.sns.domain.dto.comment.CommentModifyResponse;
 import com.likelion.sns.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +24,9 @@ public class CommentController {
         return Response.success(commentService.createComment(postId, commentCreateRequest, authentication));
     }
 
+    // comment 수정
+    @PutMapping("/{postId}/comments/{id}")
+    public Response<CommentModifyResponse> modifyComment(@PathVariable Long postId, @PathVariable Long id, @RequestBody CommentModifyRequest commentModifyRequest, Authentication authentication) {
+        return Response.success(commentService.modifyComment(postId, id, commentModifyRequest, authentication));
+    }
 }
