@@ -5,6 +5,10 @@ import com.likelion.sns.domain.dto.comment.*;
 import com.likelion.sns.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,5 +35,11 @@ public class CommentController {
     @DeleteMapping("/{postId}/comments/{id}")
     public Response<CommentDeleteResponse> deleteComment(@PathVariable Long postId, @PathVariable Long id, Authentication authentication) {
         return Response.success(commentService.deleteComment(postId, id, authentication));
+    }
+
+    // 포스트 comment 전체 조회
+    @GetMapping("/{postId}/comments")
+    public Response<Page<CommentListResponse>> getAllComments(@PathVariable Long postId, @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return Response.success(commentService.getAllComments(postId, pageable));
     }
 }

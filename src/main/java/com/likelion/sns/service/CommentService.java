@@ -10,6 +10,8 @@ import com.likelion.sns.repository.CommentRepository;
 import com.likelion.sns.repository.PostRepository;
 import com.likelion.sns.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +78,14 @@ public class CommentService {
 
         return CommentDeleteResponse.toResponse(id);
 
+    }
+
+    // 포스트 전체 comment 조회
+    public Page<CommentListResponse> getAllComments(Long postId, Pageable pageable) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, ErrorCode.POST_NOT_FOUND.getMessage()));
+        return commentRepository.findByPost(post, pageable).map(CommentListResponse::toCommentListResponse);
     }
 
 }
