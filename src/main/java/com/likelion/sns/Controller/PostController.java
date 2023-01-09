@@ -54,4 +54,10 @@ public class PostController {
         return Response.success(postService.deletePost(id, authentication));
     }
 
+    // myFeed
+    @GetMapping("/my")
+    public Response<Page<PostMyFeedResponse>> myFeed(@PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable, Authentication authentication) {
+        return Response.success(postService.getMyFeed(pageable, authentication));
+    }
+
 }

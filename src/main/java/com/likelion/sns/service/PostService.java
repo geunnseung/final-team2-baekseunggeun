@@ -85,4 +85,13 @@ public class PostService {
         return PostDeleteResponse.toResponse(postId);
     }
 
+    // MyFeed
+    public Page<PostMyFeedResponse> getMyFeed(Pageable pageable, Authentication authentication) {
+
+        User user = userRepository.findByUserName(authentication.getName())
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, ErrorCode.USERNAME_NOT_FOUND.getMessage()));
+
+        Page<Post> usersPost = postRepository.findByUser(user, pageable);
+        return usersPost.map(PostMyFeedResponse::toResponse);
+    }
 }
